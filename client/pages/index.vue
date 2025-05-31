@@ -3,10 +3,7 @@
 definePageMeta({
   title: 'Index',
   layout: 'default',
-  auth: {
-    unauthenticatedOnly: false,
-    navigateUnauthenticatedTo: '/login'
-  }
+  requiresAuth: true
 })
 </script>
 

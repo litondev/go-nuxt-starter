@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
-  const token = useCookie("token")
+  const token = useCookie("auth.token")
 
   axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   axios.defaults.baseURL = config.public.apiUrl;

@@ -15,7 +15,6 @@ const schema = yup.object({
 
 const { signIn } = useAuth()
 const toast = useToast()
-const route = useRoute();
 
 const email = ref('');
 const password = ref('');

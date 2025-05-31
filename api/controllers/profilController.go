@@ -13,7 +13,7 @@ import (
 )
 
 type UpdateProfilRequest struct {
-    Name    string `json:"nama" binding:"required"`
+    Name    string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required"`
     Password *string `json:"password"`
 	Password_Confirm *string `json:"password_confirm""`
@@ -36,6 +36,7 @@ func UpdateProfilData(c *fiber.Ctx) error {
 		})
     }
 
+	
 	name := req.Name;
 	email := req.Email;
 	password := req.Password;
@@ -128,11 +129,13 @@ func UpdateProfilPhoto(c *fiber.Ctx) error {
 	
 	claims := user.Claims.(jwt.MapClaims)
 
-	var id uint = uint(claims["sub"].(float64))
+	var id uint = uint(claims["id"].(float64))
 
     var stringID string = strconv.FormatUint(uint64(id),10)
 
-	filename := stringID + "-" + file.Filename;
+	ext := filepath.Ext(file.Filename)
+
+	filename := stringID + "-default" + ext;
 	
 	pathname := filepath.Base("") + "/assets/users/" + filename
 
