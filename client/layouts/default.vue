@@ -1,191 +1,178 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import { useColorMode } from '@vueuse/core'
 
-const items = ref<NavigationMenuItem[][]>([
-  [
-    {
-      label: 'Guide',
-      icon: 'i-lucide-book-open',
-      children: [
-        {
-          label: 'Introduction',
-          description: 'Fully styled and customizable components for Nuxt.',
-          icon: 'i-lucide-house'
-        },
-        {
-          label: 'Installation',
-          description: 'Learn how to install and configure Nuxt UI in your application.',
-          icon: 'i-lucide-cloud-download'
-        },
-        {
-          label: 'Icons',
-          icon: 'i-lucide-smile',
-          description: 'You have nothing to do, @nuxt/icon will handle it automatically.'
-        },
-        {
-          label: 'Colors',
-          icon: 'i-lucide-swatch-book',
-          description: 'Choose a primary and a neutral color from your Tailwind CSS theme.'
-        },
-        {
-          label: 'Theme',
-          icon: 'i-lucide-cog',
-          description:
-            'You can customize components by using the `class` / `ui` props or in your app.config.ts.'
-        }
-      ]
-    },
+const colorMode = useColorMode()
+const { signOut } = useAuth()
 
-    {
-      label: 'Guide',
-      icon: 'i-lucide-book-open',
-      children: [
-        {
-          label: 'Introduction',
-          description: 'Fully styled and customizable components for Nuxt.',
-          icon: 'i-lucide-house'
-        },
-        {
-          label: 'Installation',
-          description: 'Learn how to install and configure Nuxt UI in your application.',
-          icon: 'i-lucide-cloud-download'
-        },
-        {
-          label: 'Icons',
-          icon: 'i-lucide-smile',
-          description: 'You have nothing to do, @nuxt/icon will handle it automatically.'
-        },
-        {
-          label: 'Colors',
-          icon: 'i-lucide-swatch-book',
-          description: 'Choose a primary and a neutral color from your Tailwind CSS theme.'
-        },
-        {
-          label: 'Theme',
-          icon: 'i-lucide-cog',
-          description:
-            'You can customize components by using the `class` / `ui` props or in your app.config.ts.'
-        }
-      ]
-    },
-    {
-      label: 'Composables',
-      icon: 'i-lucide-database',
-      children: [
-        {
-          label: 'defineShortcuts',
-          icon: 'i-lucide-file-text',
-          description: 'Define shortcuts for your application.',
-          to: '/composables/define-shortcuts'
-        },
-        {
-          label: 'useOverlay',
-          icon: 'i-lucide-file-text',
-          description: 'Display a modal/slideover within your application.',
-          to: '/composables/use-overlay'
-        },
-        {
-          label: 'useToast',
-          icon: 'i-lucide-file-text',
-          description: 'Display a toast within your application.',
-          to: '/composables/use-toast'
-        }
-      ]
-    },
-    {
-      label: 'Components',
-      icon: 'i-lucide-box',
-      to: '/components',
-      active: true,
-      defaultOpen: true,
-      children: [
-        {
-          label: 'Link',
-          icon: 'i-lucide-file-text',
-          description: 'Use NuxtLink with superpowers.',
-          to: '/components/link'
-        },
-        {
-          label: 'Modal',
-          icon: 'i-lucide-file-text',
-          description: 'Display a modal within your application.',
-          to: '/components/modal'
-        },
-        {
-          label: 'NavigationMenu',
-          icon: 'i-lucide-file-text',
-          description: 'Display a list of links.',
-          to: '/components/navigation-menu'
-        },
-        {
-          label: 'Pagination',
-          icon: 'i-lucide-file-text',
-          description: 'Display a list of pages.',
-          to: '/components/pagination'
-        },
-        {
-          label: 'Popover',
-          icon: 'i-lucide-file-text',
-          description: 'Display a non-modal dialog that floats around a trigger element.',
-          to: '/components/popover'
-        },
-        {
-          label: 'Progress',
-          icon: 'i-lucide-file-text',
-          description: 'Show a horizontal bar to indicate task progression.',
-          to: '/components/progress'
-        }
-      ]
-    }
-  ],
-  [
-    {
-      label: 'GitHub',
-      icon: 'i-simple-icons-github',
-      badge: '3.8k',
-      to: 'https://github.com/nuxt/ui',
-      target: '_blank'
-    },
-    {
-      label: 'Help',
-      icon: 'i-lucide-circle-help',
-      disabled: true
-    }
-  ]
+const left_items = ref<NavigationMenuItem[]>([
+  {
+    label: 'User',
+    icon: 'i-lucide-users',
+    name : 'user',
+    children: [
+      {
+        label: 'Index',
+        description: 'Index User',
+        icon: 'i-lucide-list',
+        to : '/user'
+      },
+      {
+        label: 'Tambah',
+        description: 'Tambah User',
+        icon: 'i-lucide-user-plus',
+        to : '/user/add'
+      },
+    ]
+  }
 ])
+
+const openMenuLeft = ref<string | null>(null)
+const toggleMenuLeft = (name: string) => {
+  openMenuLeft.value = openMenuLeft.value === name ? null : name
+}
+
+const right_items = ref<NavigationMenuItem[]>([
+  {
+    label: 'Profil',
+    icon: 'i-lucide-user',
+    name : 'profil',
+    children: [
+      {
+        label: 'Profil',
+        description: 'Profil',
+        icon: 'i-lucide-house',
+        to: '/profil'
+      },
+      {
+        label: 'Keluar',
+        description: 'Keluar',
+        icon: 'i-lucide-arrow-right',
+        click: () => signOut({ callbackUrl: '/login', redirect: true })
+      }
+    ]
+  }
+])
+
+const openMenuRight = ref<string | null>(null)
+const toggleMenuRight = (name: string) => {
+  openMenuRight.value = openMenuRight.value === name ? null : name    
+}
+
+const menuRef = ref(null);
+
+const onClickOutside = (event) => {
+  if (
+    menuRef.value && 
+    !menuRef.value.contains(event.target)
+  ) {
+    openMenuRight.value = null;
+    openMenuLeft.value = null;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', onClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onClickOutside);
+});
 </script>
 
 <template>
-  <div>
-    <div class="
-        flex items-center border-b border-default w-full
-        fixed top-0 left-0 right-0 z-50
-         bg-white bg-opacity-70
-    backdrop-blur-md
-      "
-      highlight
-      highlight-color="primary">
-      <!-- Logo kiri -->
-      <div class="p-2">
-        <img src="./favicon.ico" alt="Logo" class="h-8 w-auto" />
+  <UApp>
+    <div
+      class="flex items-center border-b border-default w-full fixed top-0 left-0 right-0 z-50"
+      :class="{ dark: colorMode.value === 'dark' }"
+      ref="menuRef">
+      <div class="p-2 w-auto">
+        <img src="/favicon.ico" alt="Logo" class="h-8" />
       </div>
-        <UNavigationMenu
-            highlight
-            highlight-color="primary"
-            orientation="horizontal"
-            :items="items"
-            class="
-              data-[orientation=horizontal]:border-b border-default 
-              data-[orientation=horizontal]:w-full 
-              data-[orientation=vertical]:w-48
-              data-[orientation=horizontal]:p-2 
-              data-[orientation=vertical]:p-4
-            "
-        />
+
+      <nav class="flex justify-between w-full">
+        <div class="w-5/6">
+          <div
+            v-for="item in left_items"
+            :key="item.name"
+            class="relative"
+          >
+            <button
+              @click="toggleMenuLeft(item.name!)"
+              class="flex items-center gap-1 py-2 px-3 hover:text-blue-600 focus:outline-none"
+            >
+              <Icon :name="item.icon" class="w-5 h-5" />
+              <span>{{ item.label }}</span>
+            </button>
+
+            <div
+              v-if="openMenuLeft === item.name"
+              class="absolute bg-white dark:bg-gray-800 border rounded mt-2 p-3 shadow-lg min-w-[200px] z-50"
+            >
+              <ul class="space-y-2">
+                <li
+                  v-for="child in item.children"
+                  :key="child.label"
+                  class="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                >
+                  <Icon :name="child.icon" class="w-4 h-4" />
+                  <template v-if="child.to">
+                    <NuxtLink :to="child.to">{{ child.label }}</NuxtLink>
+                  </template>
+                  <template v-else-if="child.click">
+                    <button @click="child.click">{{ child.label }}</button>
+                  </template>
+                  <template v-else>
+                    <span>{{ child.label }}</span>
+                  </template>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-auto flex justify-end">
+          <div
+            v-for="item in right_items"
+            :key="item.name"
+            class="relative"
+          >
+            <button
+              @click="toggleMenuRight(item.name!)"
+              class="flex items-center gap-1 py-2 px-3 hover:text-blue-600 focus:outline-none"
+            >
+              <Icon :name="item.icon" class="w-5 h-5" />
+              <span>{{ item.label }}</span>
+            </button>
+
+            <div
+              v-if="openMenuRight === item.name"
+              class="absolute bg-white dark:bg-gray-800 border rounded mt-2 p-3 shadow-lg min-w-[200px] z-50 right-5">
+              <ul class="space-y-2">
+                <li
+                  v-for="child in item.children"
+                  :key="child.label"
+                  class="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                >
+                  <Icon :name="child.icon" class="w-4 h-4" />
+                  <template v-if="child.to">
+                    <NuxtLink :to="child.to">{{ child.label }}</NuxtLink>
+                  </template>
+                  <template v-else-if="child.click">
+                    <button @click="child.click">{{ child.label }}</button>
+                  </template>
+                  <template v-else>
+                    <span>{{ child.label }}</span>
+                  </template>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
     </div>
-    
-    <div class="container mx-auto px-4 pt-16">
-        <NuxtPage />
+
+    <div class="container mx-auto px-4 py-3 pt-16" :class="{ dark: colorMode.value === 'dark' }">
+      <NuxtPage />
     </div>
-  </div>
+  </UApp>
 </template>

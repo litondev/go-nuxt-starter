@@ -1,13 +1,8 @@
 
 <script setup lang="ts">
 definePageMeta({
-  title: 'Index',
-  layout: 'default',
-  auth : false,
-  // auth: {
-  //   unauthenticatedOnly: false,
-  //   navigateUnauthenticatedTo: '/auth/signin'
-  // }
+  title: 'Test',
+  layout: 'default'
 })
 
 // STATE
@@ -30,10 +25,6 @@ console.log(data?.value?.id);
       v-tooltip="'Halo'">
       Login
     </button>
-
-    <UButton icon="i-lucide-search" size="xs" color="secondary" variant="outline" @click="">
-      Cari
-    </UButton>
 
     <button @click="signOut({callbackUrl: '/login',redirect : true})">
       Logout

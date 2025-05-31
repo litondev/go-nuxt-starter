@@ -1,4 +1,13 @@
-module.exports = {
-  darkMode: 'class', // enables toggling dark mode via a CSS class
-  // ... other config
+export default {
+  darkMode: 'class',
+  content: [
+    './components/**/*.{vue,js}',
+    './layouts/**/*.{vue,js}',
+    './pages/**/*.{vue,js}',
+    './app.vue',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
 }
