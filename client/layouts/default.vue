@@ -44,10 +44,31 @@ const right_items = ref<NavigationMenuItem[]>([
         to: '/profil'
       },
       {
+        label: 'Mode',
+        description: 'Dark/Light',
+        icon: 'i-lucide-sun', 
+        click: () => {
+          isDark.value = !isDark.value
+          localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+          document.documentElement.classList.toggle('dark', isDark.value)
+        }
+      },
+      {
         label: 'Keluar',
         description: 'Keluar',
         icon: 'i-lucide-arrow-right',
-        click: () => signOut({ callbackUrl: '/login', redirect: true })
+        loading : false,
+        click: (child) => {
+          child.loading = true;
+
+          signOut({callbackUrl: '/login',redirect : true})
+          .catch(err => {
+            console.log(err)
+          })
+          .finally(() => {
+            child.loading = false;
+          })
+        }
       }
     ]
   }
@@ -77,6 +98,16 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('click', onClickOutside);
 });
+
+const isDark = ref(false)
+
+onMounted(() => {
+  const saved = localStorage.getItem('theme')
+  if (saved === 'dark') {
+    document.documentElement.classList.add('dark')
+    isDark.value = true
+  }
+})
 </script>
 
 <template>
@@ -153,12 +184,18 @@ onBeforeUnmount(() => {
                   :key="child.label"
                   class="flex items-center gap-2 cursor-pointer hover:text-blue-600"
                 >
-                  <Icon :name="child.icon" class="w-4 h-4" />
+                  <Icon :name="child.loading ? 'i-lucide-loader-circle' : child.icon" :class="['w-4 h-4',{'animate-spin' : child.loading}]" />
+
                   <template v-if="child.to">
                     <NuxtLink :to="child.to">{{ child.label }}</NuxtLink>
                   </template>
                   <template v-else-if="child.click">
-                    <button @click="child.click">{{ child.label }}</button>
+                    <button type="button" 
+                      class="cursor-pointer"
+                      :loading="child.loading"
+                      @click="() => child.click(child)">
+                      {{ child.label }}
+                    </button>
                   </template>
                   <template v-else>
                     <span>{{ child.label }}</span>

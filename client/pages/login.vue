@@ -24,10 +24,7 @@ const loading = ref(false);
 const onSubmit = () => {
   loading.value = true
 
-  signIn({ email: email.value, password: password.value })
-  .then(res => {
-    route.push('/')
-  })
+  signIn({ email: email.value, password: password.value },{ callbackUrl: '/', redirect: true })
   .catch(err => {
     toast.add({
       title: 'Terjadi Kesalahan',
