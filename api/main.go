@@ -11,7 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"	
 	"plato.com/plato/config"
 	"plato.com/plato/controllers"
-	adminControllers "plato.com/plato/controllers/admin"
 	jwtware "github.com/gofiber/jwt/v3"
 )
 
@@ -138,15 +137,13 @@ func main() {
 	v1.Put("/profil/update",controllers.UpdateProfilData)
 	v1.Post("/profil/upload",controllers.UpdateProfilPhoto)
 
-	admin := v1.Group("/admin")
-
-	admin.Get("/user",adminControllers.IndexUser)
-	admin.Get("/user/excel",adminControllers.ExcelUser)
-	admin.Get("/user/pdf",adminControllers.PdfUser)
-	admin.Post("/user",adminControllers.StoreUser)
-	admin.Put("/user/:id",adminControllers.UpdateUser)
-	admin.Delete("/user/:id",adminControllers.DestroyUser)
-	admin.Get("/user/:id",adminControllers.ShowUser)
+	v1.Get("/user",controllers.IndexUser)
+	v1.Get("/user/excel",controllers.ExcelUser)
+	v1.Get("/user/pdf",controllers.PdfUser)
+	v1.Post("/user",controllers.StoreUser)
+	v1.Put("/user/:id",controllers.UpdateUser)
+	v1.Delete("/user/:id",controllers.DestroyUser)
+	v1.Get("/user/:id",controllers.ShowUser)
 
 	app.Listen(os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"))
 }

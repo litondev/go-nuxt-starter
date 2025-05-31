@@ -332,13 +332,15 @@ func PdfUser(c *fiber.Ctx) error {
 
     // TABLE HEADER
     pdf.SetFont("Arial", "B", 8)
+	pdf.CellFormat(20, 5, "No", "1", 0, "L", false, 0, "")
     pdf.CellFormat(20, 5, "Name", "1", 0, "L", false, 0, "")
     pdf.CellFormat(30, 5, "Email", "1", 0, "L", false, 0, "")
     pdf.Ln(-1)
 
     // TABLE CONTENT
     pdf.SetFont("Arial", "", 8)
-    for _, user := range users {
+    for index, user := range users {
+		pdf.CellFormat(20, 5, fmt.Sprintf("%d", index+1), "1", 0, "", false, 0, "")
         pdf.CellFormat(20, 5, user.Name, "1", 0, "", false, 0, "")
         pdf.CellFormat(30, 5, user.Email, "1", 0, "", false, 0, "")
         pdf.Ln(-1)
@@ -360,15 +362,15 @@ func PdfUser(c *fiber.Ctx) error {
 		})
     }
 
-	go func() {
-		time.Sleep(2 * time.Second)
+	// go func() {
+	// 	time.Sleep(2 * time.Second)
 		
-		_, err := os.Stat(fileName)
+	// 	_, err := os.Stat(fileName)
 
-		if !os.IsNotExist(err) {
-			os.Remove(fileName)
-		}
-	}()
+	// 	if !os.IsNotExist(err) {
+	// 		os.Remove(fileName)
+	// 	}
+	// }()
 
 	return c.Status(200).JSON(fiber.Map{
 		"message" : "success",
